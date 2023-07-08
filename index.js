@@ -61,7 +61,7 @@ const
             class="sudoku-cell"
             maxlength="1"
             type="text"
-            oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+            oninput="this.value=this.value.replace(/[^1-9]/g,'');"
             ${value ? `value="${value}" readonly` : ''}
         />`,
 
