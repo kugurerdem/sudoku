@@ -1,9 +1,10 @@
 const
     numberOfCellsToRemoveByDifficulty = {
-        easy: 40,
-        medium: 50,
-        hard: 60,
+        easy: 30,
+        medium: 40,
+        hard: 50,
     },
+
     state = {
         page: 'Landing',
         difficulty: 'medium',
