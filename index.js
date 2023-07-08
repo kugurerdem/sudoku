@@ -25,12 +25,6 @@ const
         }
     },
 
-    changeDifficulty = (e) => {
-        state.page = 'SudokuGame'
-        state.difficulty = event.target.className
-        render()
-    },
-
     LandingPage = () => `
         <h1> Choose Difficulty </h1>
         <div class="difficulty">
@@ -65,26 +59,10 @@ const
             ${value ? `value="${value}" readonly` : ''}
         />`,
 
-    sudokuDOM2Array = (sudokuGrid) => {
-        const
-            sudokuRows = Array.from(sudokuGrid.children),
-            sudokuCells = sudokuRows.map(row => Array.from(row.children)),
-            sudokuArray =
-                sudokuCells.map(row => row.map(cell => cell.value))
-
-        return sudokuArray
-    },
-
-    chunk = (array, size) => {
-        const
-            firstChunk = array.slice(0, size),
-            remainingChunks = array.slice(size)
-
-        return [firstChunk].concat(
-            remainingChunks.length > size
-                ? chunk(remainingChunks, size)
-                : [remainingChunks]
-        )
+    changeDifficulty = (e) => {
+        state.page = 'SudokuGame'
+        state.difficulty = event.target.className
+        render()
     },
 
     generateSudokuArray = (difficulty) => {
@@ -118,6 +96,29 @@ const
         }
 
         return copiedArray;
+    },
+
+    chunk = (array, size) => {
+        const
+            firstChunk = array.slice(0, size),
+            remainingChunks = array.slice(size)
+
+        return [firstChunk].concat(
+            remainingChunks.length > size
+                ? chunk(remainingChunks, size)
+                : [remainingChunks]
+        )
+    },
+
+    sudokuDOM2Array = (sudokuGrid) => {
+        const
+            sudokuRows = Array.from(sudokuGrid.children),
+            sudokuCells = sudokuRows.map(row => Array.from(row.children)),
+            sudokuArray =
+                sudokuCells.map(row => row.map(cell => cell.value))
+
+        return sudokuArray
     }
+
 
 init()
