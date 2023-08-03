@@ -104,8 +104,20 @@ const
         if(e.target.value){
             state.sudokuArray[rowIdx][colIdx] = Number(e.target.value)
 
+            const finished = isEqual(
+                state.sudokuArray,
+                state.solvedSudokuArray
+            )
+
+            if(finished) finishGame()
+
             render()
         }
+    },
+
+    finishGame = () => {
+        // TODO: improve this function
+        alert('You finished the game!')
     },
 
     generateSudokuArray = (difficulty) => {
@@ -156,15 +168,10 @@ const
         )
     },
 
-    sudokuDOM2Array = (sudokuGrid) => {
-        const
-            sudokuRows = Array.from(sudokuGrid.children),
-            sudokuCells = sudokuRows.map(row => Array.from(row.children)),
-            sudokuArray =
-                sudokuCells.map(row => row.map(cell => cell.value))
-
-        return sudokuArray
-    }
+    // implement the opposite of chunk
+    isEqual = (array1, array2) =>
+        (array1.length == array2.length
+            && array1.every((value, index) => value == array2[index]))
 
 
 init()
