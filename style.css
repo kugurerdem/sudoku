@@ -43,3 +43,11 @@ div .sudoku-row {
 .sudoku-cell:nth-child(3n) {
     border-right: 3px solid black;
 }
+
+.sudoku-cell:focus {
+    color: #A9A9A9;
+}
+
+.red {
+    color: red;
+}

@@ -73,19 +73,39 @@ const
                 SudokuCell(rowIdx, colIdx)).join('\n')}
         </div>`,
 
-    SudokuCell = (value) => `
-        <input
-            class="sudoku-cell"
+    SudokuCell = (rowIdx, colIdx) => {
+        const
+            value = state.sudokuArray[rowIdx][colIdx],
+            correctValue = state.solvedSudokuArray[rowIdx][colIdx],
+            colorClass = (value && value != correctValue) ? 'red' : ''
+
+        return `<input
+            class="sudoku-cell ${colorClass}"
             maxlength="1"
             type="text"
             oninput="this.value=this.value.replace(/[^1-9]/g,'');"
-            ${value ? `value="${value}" readonly` : ''}
-        />`,
+            ${value ? `value="${value}" ${readOnly(rowIdx, colIdx)}` : ''},
+            onKeyup="updateSudokuArray(event, ${rowIdx}, ${colIdx})"
+        />`
+    },
+
+    readOnly = (rowIdx, colIdx) =>
+        state.initialSudokuArray[rowIdx][colIdx]
+            ? 'readonly'
+            : ''
 
     changeDifficulty = (e) => {
         state.page = 'SudokuGame'
         state.difficulty = e.target.className
         render()
+    },
+
+    updateSudokuArray = (e, rowIdx, colIdx) => {
+        if(e.target.value){
+            state.sudokuArray[rowIdx][colIdx] = Number(e.target.value)
+
+            render()
+        }
     },
 
     generateSudokuArray = (difficulty) => {
