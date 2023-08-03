@@ -84,7 +84,7 @@ const
 
     changeDifficulty = (e) => {
         state.page = 'SudokuGame'
-        state.difficulty = event.target.className
+        state.difficulty = e.target.className
         render()
     },
 
