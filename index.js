@@ -1,4 +1,6 @@
 const
+    {assign} = Object,
+
     numberOfCellsToRemoveByDifficulty = {
         easy: 30,
         medium: 40,
@@ -8,6 +10,9 @@ const
     state = {
         page: 'Landing',
         difficulty: 'medium',
+        initialSudokuArray: null,
+        solvedSudokuArray: null,
+        sudokuArray: null,
     },
 
     init = () => render(),
@@ -17,12 +22,26 @@ const
     },
 
     App = () => {
-        switch (state.page) {
-            case 'Landing':
-                return LandingPage()
-            case 'SudokuGame':
-                return SudokuGame(generateSudokuArray(state.difficulty))
+        if(state.page == 'Landing')
+            return LandingPage()
+
+        else if(state.page == 'SudokuGame'){
+            if(!state.initialSudokuArray){
+                const [
+                    initialSudokuArray,
+                    solvedSudokuArray
+                ] = generateSudokuArray(state.difficulty)
+
+                assign(state, {
+                    initialSudokuArray, solvedSudokuArray,
+                    sudokuArray: initialSudokuArray
+                })
+            }
+
+            return SudokuGame(state.sudokuArray)
         }
+
+        return ``
     },
 
     LandingPage = () => `
@@ -34,20 +53,24 @@ const
         </div>
     `,
 
-    SudokuGame = (sudokuArray) => `
+    // sudokuArray is a 2D array
+    // e.g. [ [1, 2, 3, 4, null, 6, null, 8, 9], ... ]
+    SudokuGame = () => `
         <h1>Sudoku Game</h1>
-        ${SudokuGrid(sudokuArray)}
+        ${SudokuGrid()}
     `,
 
-    SudokuGrid = (sudokuArray) => `
+    SudokuGrid = () => `
         <div id="sudoku-grid" class="sudoku-grid">
-            ${sudokuArray.map(row => SudokuRow(row)).join('\n')}
+            ${state.sudokuArray
+                .map((_, idx) => SudokuRow(idx)).join('\n')}
         </div>`,
 
 
-    SudokuRow = (row) => `
+    SudokuRow = (rowIdx) => `
         <div class="sudoku-row">
-            ${row.map(cell => SudokuCell(cell)).join('\n')}
+            ${state.sudokuArray[rowIdx].map((_, colIdx) =>
+                SudokuCell(rowIdx, colIdx)).join('\n')}
         </div>`,
 
     SudokuCell = (value) => `
@@ -80,7 +103,10 @@ const
                 numberOfCellsToRemove
             )
 
-        return chunk(finalizedSudokuPuzzle, 9)
+        return [
+            chunk(finalizedSudokuPuzzle, 9),
+            chunk(normalizedRandomPuzzle, 9)
+        ]
     },
 
     // TODO: find a better name
