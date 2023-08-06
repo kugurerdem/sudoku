@@ -14,8 +14,18 @@ const
         solvedSudokuArray: null,
         sudokuArray: null,
         secondsPassed: 0,
+        bestTime: 0,
         timer: null,
-        finished: false
+        finished: false,
+        scores:
+            JSON.parse(localStorage.getItem('scores')) || [/*
+                {
+                    difficulty: 'easy',
+                    time: 12934,
+                    date: '2018-01-01'
+                },
+                ...
+            */]
     }),
 
     state = createInitialState(),
@@ -67,8 +77,26 @@ const
         <h1>Sudoku Game</h1>
         ${SudokuGrid()}
         ${Timer()}
+        ${BestScore()}
         <button onclick="restartGame()">New Game</button>
     `,
+
+    BestScore = () => {
+        const
+            sortedScores =
+                state.scores
+                    .filter(score => score.difficulty == state.difficulty)
+                    .map( score => score.time )
+                    .sort(),
+
+            bestScore =
+                sortedScores.length == 0
+                    ? 'Not played yet'
+                    : sortedScores[0]
+
+
+        return `<div> Best Score (in time): ${bestScore} </div>`
+    },
 
     Timer = () => `
         <div id="timer"> Time: ${state.secondsPassed} </div>
@@ -145,6 +173,15 @@ const
 
     finishGame = () => {
         cleanup()
+
+        state.scores.push({
+            difficulty: state.difficulty,
+            time: state.secondsPassed,
+            date: new Date().toISOString().slice(0, 10)
+        })
+
+        localStorage.setItem('scores', JSON.stringify(state.scores))
+
         alert(
             'You have finished the game in '
             + state.secondsPassed + ' seconds'
