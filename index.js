@@ -7,18 +7,26 @@ const
         hard: 50,
     },
 
-    state = {
+    createInitialState = () => ({
         page: 'Landing',
         difficulty: 'medium',
         initialSudokuArray: null,
         solvedSudokuArray: null,
         sudokuArray: null,
-    },
+        secondsPassed: 0,
+        timer: null,
+        finished: false
+    }),
+
+    state = createInitialState(),
 
     init = () => render(),
 
-    render = () => {
-        document.getElementById('sudoku').innerHTML = App()
+    render = (
+        id = 'sudoku',
+        component = App
+    ) => {
+        document.getElementById(id).innerHTML = component()
     },
 
     App = () => {
@@ -58,6 +66,12 @@ const
     SudokuGame = () => `
         <h1>Sudoku Game</h1>
         ${SudokuGrid()}
+        ${Timer()}
+        <button onclick="restartGame()">New Game</button>
+    `,
+
+    Timer = () => `
+        <div id="timer"> Time: ${state.secondsPassed} </div>
     `,
 
     SudokuGrid = () => `
@@ -98,6 +112,7 @@ const
         state.page = 'SudokuGame'
         state.difficulty = e.target.className
         render()
+        startGame()
     },
 
     updateSudokuArray = (e, rowIdx, colIdx) => {
@@ -115,9 +130,29 @@ const
         }
     },
 
+    startGame = () => {
+        state.timer = setInterval(() => {
+            state.secondsPassed += 1
+            render("timer", Timer)
+        }, 1000)
+    },
+
+    restartGame = () => {
+        cleanup()
+        assign(state, createInitialState())
+        render()
+    },
+
     finishGame = () => {
-        // TODO: improve this function
-        alert('You finished the game!')
+        cleanup()
+        alert(
+            'You have finished the game in '
+            + state.secondsPassed + ' seconds'
+        )
+    },
+
+    cleanup = () => {
+        state.timer = clearInterval(state.timer)
     },
 
     generateSudokuArray = (difficulty) => {
